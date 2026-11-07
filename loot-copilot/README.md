@@ -30,3 +30,12 @@ Fixes OpenAI HTTP 400 for JSON-mode visual evidence analysis. The Responses API 
 ## v1.2.1 updater compatibility correction
 
 The initial v1.2.1 release was rejected by the v1.2 updater because `visual_analysis.py` was missing from the old updater's allowed-file list. The corrected update package replaces only the allowlisted `updater.py` and `VERSION.txt`, adds `visual_analysis.py` to the updater allowlist for future releases, and performs a narrowly scoped, one-time JSON-mode prompt repair on the existing `visual_analysis.py` at the next app launch. The repair checks the exact old prompt before changing it, makes a backup of that source file in `data/updater_backups/pre_1_2_1/`, and does not change user data. If no matching file is installed, the repair makes no change. The corrected ZIP's SHA-256 is `cd5546dae18905f983efabd8b9f6b56fb095e681cfc4ccac57d571fa3475db2b`.
+
+## v1.4.0, character continuity and private illustrated chapters
+
+- Select the correct character (for example `kravvin/Dewdandy`) before generating a private story. If an old saved evidence report has a different or unverified character, the application asks permission to associate the recording with the selected character; attribution is user-provided, not visual proof.
+- The third-person, epic classic D&D narrative generator uses the selected character name, keeps each character's session history separate, and may incorporate observations from up to five earlier evidence-backed sessions for that same character, without treating prose as historical proof.
+- Fights and enemy presence must not be treated as confirmed kills unless the evidence explicitly confirms the outcome. The AI may still make mistakes, so review privately.
+- Each newly generated story includes an offline `adventure_illustrated_private.html` with actual OBS screenshots, offsets, and evidence notes; click **Open illustrated chapter** in Visual Review. Screenshots are not uploaded for gallery creation.
+- The gallery is private; no automatic GitHub posting and no generative art. Review screenshots for private chat and player details before publishing anything.
+- v1.4.0 GitHub updater patch replaces only `capture_archive.py`, `updater.py`, and `VERSION.txt`; `data/` remains untouched. Simulated upgrade from v1.3.0 passed, including history, encrypted-key and evidence preservation. Live Windows validation remains outstanding.
