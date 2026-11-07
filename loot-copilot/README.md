@@ -1,25 +1,17 @@
 # M&M Loot Copilot releases
 
-## Current version: v0.9
+## Current update: v1.1 Visual Evidence Archive
 
-The [latest.json](latest.json) manifest now points to the verified [release.b64](release.b64) ZIP payload for v0.9. In v0.8, click **Check for updates** to install it. The update archive contains `app.py`, `storage.py`, `updater.py` and `VERSION.txt`. These are all on v0.8's allowed-file list.
+The GitHub manifest `latest.json` points to v1.1. The update package `release.b64` is a Base64-encoded ZIP verified by SHA-256.
 
-New in v0.9:
-- **Adventure & economy** window with per-character and per-day event summaries
-- Loot and gathering event counts, item-name frequencies, and saved AI recommendations
-- Copyable text reports; no new API requests to view the report
-- No unsupported vendor prices, sales, gold/hour, item quantity or drop-location claims
+This is a compatibility release for older v0.9 installations. It only replaces filenames permitted by the v0.9 updater; the new screenshot archive module is included in the updated journal component and extracted locally when the user opens **Visual evidence archive**. Future updates can use the expanded v1.1 updater allowlist directly.
 
-The app observes only previously verified character ledger acquisition events (`act_13`, `act_27`). Event counts are not necessarily item quantities. Historical events not imported into `data/item_history.json` are not included.
+Install from v0.9 using **Check for updates**. The updater backs up the existing application files and never replaces `data/`, which retains per-character history, cached research, preferences, and Windows-encrypted API credentials.
 
-The updater checks the downloaded ZIP's SHA-256 against the pinned manifest, restricts overwritten paths, backs up code files, and does not overwrite `data/`. Keep your Windows account and GitHub credentials protected. Hash verification detects mismatches but is not independent code signing. Don't put API credentials into GitHub files.
+Visual Evidence Archive watches completed OBS recordings, extracts a bounded number of local screenshots using FFmpeg and FFprobe, and stores them privately. It does **not** perform continuous automated AI analysis, publish videos/screenshots, or make API calls for visual interpretation.
 
-The app is an unofficial community tool. Confirm that this type of monitoring complies with Monsters & Memories rules.
+For setup, use OBS recording directory and executable paths configured on the local Windows machine. Character-specific journal publishing requires a separately saved GitHub token and is independent of the private visual screenshot archive.
 
-## Publishing subsequent versions
+The package's updater installation, checksum validation, preserved data, and embedded capture module were checked in a local simulation. The updated application still requires verification on the user's Windows PC.
 
-1. Build, test and package an incremental ZIP using allowlisted app files, including `VERSION.txt`.
-2. Base64-encode the ZIP and publish it at `release.b64`.
-3. Verify GitHub readback against the local ZIP and SHA-256.
-4. Update `latest.json` with the new version, release URL, and checksum **last**.
-5. Validate updater installation on Windows where possible.
+Use this unofficial tool only in compliance with the game rules. Never store secrets in this GitHub repository.
