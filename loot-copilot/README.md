@@ -2,9 +2,9 @@
 
 ## Latest release: v1.2 (Visual Evidence Review)
 
-The **Check for updates** button on v1.1 downloads the package described in [latest.json](latest.json) from [release.b64](release.b64). Version 1.2 adds opt-in private AI screenshot review for evidence previously extracted locally from OBS recordings.
+The **Check for updates** button on v1.1 downloads the verified, v1.1-updater-compatible package described in [latest.json](latest.json) from [release.b64](release.b64). Version 1.2 adds opt-in private AI screenshot review for evidence previously extracted locally from OBS recordings.
 
-After updating, open **Adventure Journal > Visual evidence archive > AI visual review (paid)**. Choose an archived recording and the associated character (if known). Select 4, 6, 8 or 12 frames, then explicitly consent to a paid OpenAI request containing those screenshots. The response is saved as `data/evidence_sessions/<id>/visual_analysis.json` and `adventure_evidence_draft.md`. The optional **Create private story (paid)** button uses saved observations for a short draft. Opening cached analysis requires no further API calls.
+After updating, open **Adventure Journal > Visual evidence archive > AI visual review (paid)**. Choose an archived recording and the associated character (if known). Select 4, 6, 8 or 12 frames, then explicitly consent to a paid OpenAI request containing those screenshots. The analysis UI is bundled within capture_archive.py so the v1.1 updater can install it without a manual bootstrap. The response is saved as `data/evidence_sessions/<id>/visual_analysis.json` and `adventure_evidence_draft.md`. The optional **Create private story (paid)** button uses saved observations for a short draft. Opening cached analysis requires no further API calls.
 
 **Privacy and accuracy:** Screenshots can include private messages, usernames and sensitive text. Inspect before transmitting. The analysis is based on sparse frames and approximate file timestamps; it cannot reconstruct all unseen gameplay. PvP outcomes, quest completions, player identities and dialogue require clear visual evidence and confirmation. Neither screenshot analysis nor the generated private draft is automatically sent to GitHub or included in public session posts.
 
