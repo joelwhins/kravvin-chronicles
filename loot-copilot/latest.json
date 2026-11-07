@@ -1,6 +1,6 @@
 {
-  "version": "1.7.0",
-  "base_version": "1.6.1",
-  "package_url": "https://raw.githubusercontent.com/joelwhins/kravvin-chronicles/main/loot-copilot/release-1.7.0.b64",
-  "sha256": "c614c4d260a367111ea3f5339dd7b2f79c396b600348344b31f3cfa7da0b020a"
+  "version": "1.7.1",
+  "base_version": "1.7.0",
+  "package_url": "https://raw.githubusercontent.com/joelwhins/kravvin-chronicles/main/loot-copilot/release-1.7.1.b64",
+  "sha256": "c9450ec2c3979d4a66fb27141441a73ddbc671ec9cc4e22df41919a442a94946"
 }
