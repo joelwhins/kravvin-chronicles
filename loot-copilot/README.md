@@ -1,6 +1,6 @@
 # M&M Loot Copilot, GitHub update channel
 
-## Latest release: v1.6.0 (AI Illustrated Adventure Journals)
+## Latest release: v1.6.1 (encrypted API credential retention fix)
 
 The **Check for updates** button on v1.1 downloads the verified, v1.1-updater-compatible package described in [latest.json](latest.json) from [release.b64](release.b64). Version 1.2 adds opt-in private AI screenshot review for evidence previously extracted locally from OBS recordings.
 
@@ -53,3 +53,13 @@ Generated images are cached locally in the recording's `private_art` folder. Reo
 Before any external sharing: open and review the private illustrated chapter, select **Approve reviewed artwork**, then **Export public-ready chapter ZIP**. The exported static ZIP contains the story and approved AI artwork only; it excludes the raw screenshots, analysis JSON, private evidence manifest, and API credentials. The ZIP stays local. This update **does not automatically publish to GitHub or any public website**.
 
 **Test saved API key (free)** queries the OpenAI models endpoint without requesting paid model generation. The image-generation path has local mocked-response tests and the updater migration test passes; a live paid image generation has not yet been performed on the user's Windows installation.
+
+## v1.6.1 credential fix
+
+Versions through v1.6.0 could overwrite the Windows DPAPI-encrypted OpenAI key with a stale in-memory or `OPENAI_API_KEY` environment key whenever the main app saved preferences, changed characters, closed, or launched an update. The updater itself never shipped `data/`, but the main app's close handler could rewrite `data/api_key.dpapi` just before updating.
+
+v1.6.1 makes the encrypted key authoritative, separates routine preference changes from explicit credential saving, protects against overwriting a key updated in another window, requires confirmation before deleting a saved key, and adds `Test saved key (free)` in the main window. It also installs `VERSION.txt` last in the revised updater. No personal data, evidence, or credentials are included in the patch archive.
+
+For this one-time repair, **the manual v1.6.1 installer is recommended** while closing the old v1.6.0 process because that version may still re-save the stale key on exit. After the repair, use the GitHub `Check for updates` button for subsequent releases. If an old key was already overwritten, the patch preserves what is currently stored; enter a valid key once and explicitly save it. The v1.6.1 release is for users already on v1.6.0.
+
+Local tests include seven credential and migration checks. Live Windows verification remains outstanding.
