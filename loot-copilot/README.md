@@ -1,21 +1,25 @@
-# M&M Loot Copilot: GitHub updates
+# M&M Loot Copilot releases
 
-The desktop application's **Check for updates** button reads [latest.json](latest.json) and downloads the verified [release.b64](release.b64) through HTTPS.
+## Current version: v0.9
 
-## Current release: v0.8
+The [latest.json](latest.json) manifest now points to the verified [release.b64](release.b64) ZIP payload for v0.9. In v0.8, click **Check for updates** to install it. The update archive contains `app.py`, `storage.py`, `updater.py` and `VERSION.txt`. These are all on v0.8's allowed-file list.
 
-v0.8 is live on GitHub. It displays existing saved AI research automatically when an item is selected or when new loot arrives and no other item is selected. Reading cached research does not make an OpenAI API request. Manual research and optional auto-research can still generate charges for uncached items.
+New in v0.9:
+- **Adventure & economy** window with per-character and per-day event summaries
+- Loot and gathering event counts, item-name frequencies, and saved AI recommendations
+- Copyable text reports; no new API requests to view the report
+- No unsupported vendor prices, sales, gold/hour, item quantity or drop-location claims
 
-The v0.8 GitHub update package contains updated `app.py`, `updater.py` and `VERSION.txt`. It was built against the v0.6 and v0.7 application layout, so either version can upgrade directly through the button. Older versions may require manual installation of a newer base version first.
+The app observes only previously verified character ledger acquisition events (`act_13`, `act_27`). Event counts are not necessarily item quantities. Historical events not imported into `data/item_history.json` are not included.
 
-## Persistence and security
+The updater checks the downloaded ZIP's SHA-256 against the pinned manifest, restricts overwritten paths, backs up code files, and does not overwrite `data/`. Keep your Windows account and GitHub credentials protected. Hash verification detects mismatches but is not independent code signing. Don't put API credentials into GitHub files.
 
-The updater checks the downloaded archive's SHA-256 against the manifest, rejects unapproved file paths, and backs up local program files before replacing them. The `data/` folder is excluded from update packages and retains character history, research cache, preferences, and the Windows DPAPI-protected OpenAI API key.
+The app is an unofficial community tool. Confirm that this type of monitoring complies with Monsters & Memories rules.
 
-SHA-256 provides integrity matching against the manifest; it is not an independent code-signing signature. GitHub repository access security is important. Only install trusted releases.
+## Publishing subsequent versions
 
-## Release procedure
-
-Publish an approved ZIP of changed, allowlisted application files (plus `VERSION.txt`) as UTF-8 base64 text at `release.b64`; confirm the decoded ZIP's SHA-256; then update `latest.json` with the release version, exact URL, and hash. Publish the payload before advancing the manifest. Test installation and preserved `data/` on Windows where possible.
-
-This is an unofficial community tool. Use it according to Monsters & Memories rules, and never commit personal data or API keys.
+1. Build, test and package an incremental ZIP using allowlisted app files, including `VERSION.txt`.
+2. Base64-encode the ZIP and publish it at `release.b64`.
+3. Verify GitHub readback against the local ZIP and SHA-256.
+4. Update `latest.json` with the new version, release URL, and checksum **last**.
+5. Validate updater installation on Windows where possible.
