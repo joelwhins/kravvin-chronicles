@@ -1,13 +1,23 @@
-# Jordain Loot Copilot updates
+# M&M Loot Copilot: GitHub updates
 
-The desktop application checks `latest.json` when the user clicks **Check for updates**.
+The `Check for updates` button in the desktop application reads [latest.json](latest.json) and downloads [release.b64](release.b64) through HTTPS.
 
-New releases require uploading a UTF-8 base64 encoding of a zip archive as `release.b64`, containing exactly these files: `app.py`, `ledger_core.py`, `ai_research.py`, `storage.py`, `auto_policy.py`, `updater.py`, `Start_Loot_Copilot.bat`, `README.txt`, and `VERSION.txt`.
+## Current release
 
-For each release, compute the SHA-256 of the **decoded zip file**, update the manifest's `sha256`, `version`, and `package_url`, and commit package before manifest.
+The complete **v0.6** installer is provided in the ChatGPT conversation. It includes multi-character monitoring and the updater that can install verified incremental releases.
 
-Application files are overwritten only after SHA-256 verification. The local `data/` directory is never included in the package, and is preserved with the user's history, cache, settings, and Windows-encrypted API key.
+**v0.7** is published here as the first incremental update from **v0.6**. It updates the version and updater module, demonstrating the small verified-patch release mechanism.
 
-Version 0.4 introduces the update button. The v0.4 installer ZIP is distributed in the ChatGPT conversation. The remote release payload is not published yet; the manifest records the currently installed version only, so no remote installation is currently offered.
+To upgrade older installations (v0.5 and earlier), install v0.6 manually once by copying application files into the same folder while preserving `data/`. Then select **Check for updates** to install v0.7.
 
-The copilot is an unofficial community tool. Do not publish user data or API credentials.
+## Persistence and safety
+
+The updater downloads only from this specific GitHub repository, checks the decoded ZIP's SHA-256 against the manifest, checks the target version, rejects unexpected files and backs up the files being replaced before installing. Only program files on its allowlist can be replaced. The `data/` folder is never included or replaced; this retains character history, research cache, preferences and Windows DPAPI-protected API key.
+
+This uses checksum-based integrity checking, not a separate digital signature. Repository access and GitHub account security are critical. Downloaded updates run local code on the user's PC.
+
+The package is an unofficial community tool and must be used in accordance with the game's rules. Never commit API credentials or user data.
+
+## Future release workflow
+
+Generate a ZIP containing changed allowlisted program files plus `VERSION.txt`, base64-encode it as `release.b64`, publish the base64 file, then update `latest.json` with `version`, `base_version`, `package_url` and the SHA-256 of the decoded ZIP. GitHub's release artifacts are accessible publicly; only publish trusted source code.
