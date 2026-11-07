@@ -1,17 +1,24 @@
-# M&M Loot Copilot releases
+# M&M Loot Copilot, GitHub update channel
 
-## Current update: v1.1 Visual Evidence Archive
+## Latest release: v1.2 (Visual Evidence Review)
 
-The GitHub manifest `latest.json` points to v1.1. The update package `release.b64` is a Base64-encoded ZIP verified by SHA-256.
+The **Check for updates** button on v1.1 downloads the package described in [latest.json](latest.json) from [release.b64](release.b64). Version 1.2 adds opt-in private AI screenshot review for evidence previously extracted locally from OBS recordings.
 
-This is a compatibility release for older v0.9 installations. It only replaces filenames permitted by the v0.9 updater; the new screenshot archive module is included in the updated journal component and extracted locally when the user opens **Visual evidence archive**. Future updates can use the expanded v1.1 updater allowlist directly.
+After updating, open **Adventure Journal > Visual evidence archive > AI visual review (paid)**. Choose an archived recording and the associated character (if known). Select 4, 6, 8 or 12 frames, then explicitly consent to a paid OpenAI request containing those screenshots. The response is saved as `data/evidence_sessions/<id>/visual_analysis.json` and `adventure_evidence_draft.md`. The optional **Create private story (paid)** button uses saved observations for a short draft. Opening cached analysis requires no further API calls.
 
-Install from v0.9 using **Check for updates**. The updater backs up the existing application files and never replaces `data/`, which retains per-character history, cached research, preferences, and Windows-encrypted API credentials.
+**Privacy and accuracy:** Screenshots can include private messages, usernames and sensitive text. Inspect before transmitting. The analysis is based on sparse frames and approximate file timestamps; it cannot reconstruct all unseen gameplay. PvP outcomes, quest completions, player identities and dialogue require clear visual evidence and confirmation. Neither screenshot analysis nor the generated private draft is automatically sent to GitHub or included in public session posts.
 
-Visual Evidence Archive watches completed OBS recordings, extracts a bounded number of local screenshots using FFmpeg and FFprobe, and stores them privately. It does **not** perform continuous automated AI analysis, publish videos/screenshots, or make API calls for visual interpretation.
+The existing automatic publisher, when separately configured, continues to publish **ledger-only** narratives after its session-completion safeguards. The user must not mistake it for validated visual storytelling.
 
-For setup, use OBS recording directory and executable paths configured on the local Windows machine. Character-specific journal publishing requires a separately saved GitHub token and is independent of the private visual screenshot archive.
+## Updating
 
-The package's updater installation, checksum validation, preserved data, and embedded capture module were checked in a local simulation. The updated application still requires verification on the user's Windows PC.
+- From v1.1, click **Check for updates** to install v1.2. The updater verifies the downloaded ZIP against the SHA-256 in the manifest and backs up program files.
+- The `data/` folder is excluded from the patch. It preserves the Windows-encrypted API key, GitHub token, history, saved answers, evidence and preferences.
+- The v1.2 package is an incremental update based on the v1.1 app. Older installs may require upgrading to v1.1 first.
+- A complete v1.2 offline ZIP is also available in the associated ChatGPT conversation.
 
-Use this unofficial tool only in compliance with the game rules. Never store secrets in this GitHub repository.
+## Release procedure
+
+Publish a base64-encoded ZIP at `release.b64` before updating `latest.json`. Include `VERSION.txt` and changed allowlisted application files. Verify the SHA-256 of the decoded ZIP. Test upgrade against the previous release and preservation of `data/` on Windows.
+
+This is an unofficial community application. The user should confirm game developer approval before using automated AI analysis of gameplay recordings. No game memory reading, input automation or in-game modifications are implemented.
