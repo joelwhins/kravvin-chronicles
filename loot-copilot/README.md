@@ -26,3 +26,7 @@ This is an unofficial community application. The user should confirm game develo
 ## v1.2.1 hotfix
 
 Fixes OpenAI HTTP 400 for JSON-mode visual evidence analysis. The Responses API JSON object mode requires the word `json` in the request content; the updated `visual_analysis.py` includes it in lowercase in the request instructions and user message. The release contains only `visual_analysis.py` and `VERSION.txt`; no `data/` files are included. Use **Check for updates** from v1.2, restart, and retry **Analyze selected screenshots**. Local tests mock the OpenAI API; live Windows/API validation remains outstanding.
+
+## v1.2.1 updater compatibility correction
+
+The initial v1.2.1 release was rejected by the v1.2 updater because `visual_analysis.py` was missing from the old updater's allowed-file list. The corrected update package replaces only the allowlisted `updater.py` and `VERSION.txt`, adds `visual_analysis.py` to the updater allowlist for future releases, and performs a narrowly scoped, one-time JSON-mode prompt repair on the existing `visual_analysis.py` at the next app launch. The repair checks the exact old prompt before changing it, makes a backup of that source file in `data/updater_backups/pre_1_2_1/`, and does not change user data. If no matching file is installed, the repair makes no change. The corrected ZIP's SHA-256 is `cd5546dae18905f983efabd8b9f6b56fb095e681cfc4ccac57d571fa3475db2b`.
