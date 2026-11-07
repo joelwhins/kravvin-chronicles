@@ -339,6 +339,8 @@ def store_reviewed_corrections(folder,manifest,character,corrections):
     if folder.name!=manifest.get('id') or character!='kravvin/Parmigiano':
         raise ValueError('Correction recording/character mismatch')
     destination=folder/'evidence_corrections.json'
+    if destination.is_file() and read_json(destination,None) is None:
+        raise ValueError('Existing corrections unreadable; refusing overwrite')
     prior=read_json(destination,{})
     if prior and (not isinstance(prior,dict) or not isinstance(prior.get('corrections',[]),list)):
         raise ValueError('Unreadable corrections file; refusing overwrite')
@@ -352,6 +354,8 @@ def store_reviewed_corrections(folder,manifest,character,corrections):
     # Also preserve explicit player-confirmed trades and reviewed skill history
     # independently from the accumulated ledger-only milestones.
     chronicle=DATA/'character_chronicles'/'kravvin'/'Parmigiano'/'reviewed_annotations.json'
+    if chronicle.is_file() and read_json(chronicle,None) is None:
+        raise ValueError('Existing character annotations unreadable; refusing overwrite')
     current=read_json(chronicle,{})
     if current and (not isinstance(current,dict) or not isinstance(current.get('annotations',[]),list)):
         raise ValueError('Unreadable character annotations; refusing overwrite')
@@ -559,7 +563,7 @@ def make_draft(report: dict) -> str:
     title = report.get('character_context') or 'Unknown character'
     lines = [f'# Adventure evidence: {title}', '',
              'Private draft, not published. Observations are based on selected screenshots, not the complete recording.', '',
-             '## Visible observations', '']
+             '## Original AI observations (uncorrected, retained for audit)', '']
     for row in report.get('visual',{}).get('observations',[]):
         lines.append(f"- [{row['category']}, {row['confidence']}, {row['frame']}] {row['detail']}")
     if report.get('editorial_corrections'):
@@ -1285,7 +1289,7 @@ def run_visual_review():
                 return
             enriched_path=folder/'visual_analysis_enriched.json'
             report=read_json(enriched_path if enriched_path.is_file() else report_path,{})
-            if report.get('enrichment_version')!='1.7.5':
+            if report.get('enrichment_version')!='1.7.5' and folder.name==PARMIGIANO_FIRST_RECORDING:
                 messagebox.showinfo('Apply corrections first',
                     'Click Enrich saved report (free) to save the verified corrections before generating the story.')
                 return
