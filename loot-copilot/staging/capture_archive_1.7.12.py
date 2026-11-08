@@ -1063,6 +1063,26 @@ def first_item_order_warnings(story: str, report: dict) -> list:
         match=re.search(r'(?i)(?<!\w)'+re.escape(item)+r'(?!\w)',body)
         if match:
             first.append({'time':event['time'],'item':item,'position':match.start()})
+    # Compare the first mention of ordinary loot with confirmed milestones, too.
+    for milestone in chronological_story_anchors(report):
+        phrase=milestone.get('event','')
+        marker=None
+        if phrase.startswith('trade receipt from '):
+            name=phrase.split('trade receipt from ',1)[1]
+            if name!='unidentified player':
+                marker=re.search(r'(?i)\b'+re.escape(name)+r'\b',body)
+        elif phrase=='item destroyed' and milestone.get('item'):
+            item=re.escape(str(milestone['item']))
+            marker=re.search(r'(?is)(?:'+item+r'.{0,160}(?:destroy|discard|dispos)|'
+                             r'(?:destroy|discard|dispos).{0,160}'+item+r')',body)
+        elif phrase=='level advancement' and milestone.get('to_level') is not None:
+            level=re.escape(str(milestone['to_level']))
+            marker=re.search(r'(?i)\b(?:reach\w*|advanc\w*|attain\w*|level\w*)'
+                             r'[^.\n]{0,75}\blevel\s+'+level+r'\b',body)
+        if marker:
+            first.append({'time':str(milestone['time']),
+                          'item':phrase,'position':marker.start()})
+    first.sort(key=lambda x:x['time'])
     warnings=[]
     for i in range(len(first)):
         for j in range(i+1,len(first)):
