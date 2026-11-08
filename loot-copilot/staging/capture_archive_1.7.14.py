@@ -1108,6 +1108,8 @@ def clean_chapter(story: str) -> str:
 def chapter_audit(story: str, report: dict) -> list:
     """Conservative flags only. They cannot establish whether a claim is true."""
     body=re.split(r'(?im)^\s*#{1,6}\s*Evidence Notes\b',story,maxsplit=1)[0]
+    # Normalize typographic apostrophes in literary prose for reliable matching.
+    body=body.replace('\u2019', "'").replace('\u2018', "'")
     flags=[]
     def add(code,detail):
         flags.append({'code':code,'detail':detail,'requires_human_review':True})
@@ -1139,9 +1141,10 @@ def chapter_audit(story: str, report: dict) -> list:
             if partner!='unidentified player':
                 pattern=r'(?i)\b'+re.escape(partner)+r'\b'
         elif kind=='item destroyed' and event.get('item'):
-            item=re.escape(str(event['item']))
+            item=re.escape(str(event['item']).replace('\u2019', "'"))
             verbs=r'(?:destroy(?:ed|ing)?|discard(?:ed|ing)?|cast aside|threw away|vanish(?:ed)?|let go|disposed|disappeared|cut loose)'
-            pattern=rf'(?is)(?:{item}.{{0,150}}{verbs}|{verbs}.{{0,150}}{item})'
+            pattern=(rf'(?is)(?:{item}.{{0,150}}{verbs}|{verbs}.{{0,150}}{item}|'
+                     rf'\bcast\b.{{0,100}}{item}.{{0,20}}\baside\b)')
         elif kind=='level advancement' and event.get('to_level') is not None:
             level=event['to_level']
             labels=[re.escape(str(level))]
@@ -1164,7 +1167,10 @@ def chapter_audit(story: str, report: dict) -> list:
         add('time_claim','Check time-of-day claims against visual evidence.')
     if len(re.findall(r'(?i)\b(?:destiny|fate|tapestry|crucible|symphony|heroic)\b',body))>5:
         add('stock_prose','The chapter repeats generic fantasy metaphors.')
-    # Loot ordering is evidence metadata, not a mandatory novel plot or first-mention order.
+    # Loot ordering remains evidence metadata rather than mandatory story prose.
+    if len(re.findall(r'(?i)\b(?:he (?:sang|quipped|chirped|joked)|he burst into song|'
+                      r'he began (?:another )?song)\b',body))>4:
+        add('overplayed_comedy','Repeated musical jokes or comic tags may weaken the character.')
     return flags
 
 
