@@ -1167,7 +1167,10 @@ def preferred_story_path(folder: Path) -> Path:
     """Use a separately reviewed private draft when one exists; retain original."""
     folder=Path(folder)
     approved=folder/'adventure_story_reviewed.md'
-    return approved if approved.is_file() else folder/'adventure_story_draft.md'
+    generated=folder/'adventure_story_draft.md'
+    if approved.is_file() and generated.is_file():
+        return approved if approved.stat().st_mtime_ns>=generated.stat().st_mtime_ns else generated
+    return approved if approved.is_file() else generated
 
 
 def chronological_story_anchors(report: dict) -> list:
