@@ -949,6 +949,12 @@ def render_private_chapter(folder: Path, manifest: dict, report: dict, story: st
         if not re.fullmatch(r'[a-zA-Z0-9_-]+', page.parent.name): continue
         nav_links.append(f'<a href="../{escape(page.parent.name,quote=True)}/adventure_illustrated_private.html">Other {safe_profile} session</a>')
     nav = '  ·  '.join(nav_links)
+    quality_flags=chapter_audit(story,report)
+    quality_list=''.join('<li>'+escape(str(flag.get('detail','')))+'</li>'
+                         for flag in quality_flags)
+    quality_html=(f'<details><summary>Editorial review: {len(quality_flags)} issue(s) to check</summary>'
+                  f'<p class="meta">Automated warnings only, not proof of errors.</p>'
+                  f'<ul>{quality_list}</ul></details>') if quality_flags else ''
     body = f'''<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'">
@@ -969,6 +975,7 @@ summary{{cursor:pointer;font-size:17px;color:#e9c489}}details ul{{padding-left:2
 <p class="meta">AI-illustrated fantasy chronicle  ·  Private local draft  ·  {len(frames)} private evidence frames</p>
 {hero_html}
 <p class="notice">PRIVATE LOCAL DRAFT. Fantasy images are AI-generated artistic interpretations, not screenshots or evidence. Character attribution is player-supplied; verify before public use. Nothing is automatically published.</p>
+{quality_html}
 <article>{''.join(story_parts)}</article>
 <details><summary>Evidence notes and verification ({len(evidence)} observations)</summary><ul>{''.join(evidence) or '<li>No verified observations saved.</li>'}</ul>
 <p class="meta">Selected still frames may omit important events. Verify deaths, kills, quests, player names, and private chat before publishing.</p></details>
@@ -1004,7 +1011,12 @@ def evidence_sequence(report: dict) -> list:
                                'kind':event.get('type',event.get('kind','')),
                                'details':event.get('details',{}),
                                'item':event.get('item','')})
-    return sorted(events,key=lambda x:x['time'])[:120]
+    def stamp(event):
+        try:
+            return datetime.fromisoformat(event['time']).astimezone(timezone.utc)
+        except (ValueError,TypeError):
+            return datetime.min.replace(tzinfo=timezone.utc)
+    return sorted(events,key=stamp)[:120]
 
 
 def clean_chapter(story: str) -> str:
