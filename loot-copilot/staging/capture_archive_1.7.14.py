@@ -1228,8 +1228,16 @@ def character_story_profile(character: str) -> dict:
     saved=read_json(path,{})
     if isinstance(saved,dict) and saved.get('character_name')==key:
         if key.casefold()=='kravvin/parmigiano':
-            saved.setdefault('literary_direction','Roguish, warm and boisterous, not a nonstop joker. Let humor arise from dramatic irony. Be genuinely brave and vulnerable in danger.')
-            saved.setdefault('songwriting','One brief, original and well-crafted verse at most when dramatically earned, not an item jingle; instrument unspecified without evidence.')
+            updates={
+                'literary_direction':'Roguish, warm and boisterous, not a nonstop joker. Let humor arise from dramatic irony. Be genuinely brave and vulnerable in danger.',
+                'songwriting':'One brief, original and well-crafted verse at most when dramatically earned, not an item jingle; instrument unspecified without evidence.'
+            }
+            new_keys=False
+            for k,v in updates.items():
+                if k not in saved:
+                    saved[k]=v
+                    new_keys=True
+            if new_keys:write_json(path,saved)
         return saved
     if key.casefold()=='kravvin/parmigiano':
         profile={'character_name':key,'class':'Bard',
@@ -1290,12 +1298,12 @@ def write_narrative(report: dict, *, api_key: str, model='gpt-4.1-mini', continu
         'but do not invent consequential game outcomes, confirmed conversations, NPC quests, inventory changes, or extra named places. '
         'The factual source is canonical for confirmed milestones and outcomes, not an obligation to enumerate loot or mechanics. '
         'Choose about 3-5 meaningful scenes, dramatize them in depth, skip routine pickups, and let tangible details carry the stakes. '
-        'If Parmigiano received gifts from Sirweave and Piink, honor the confirmed identities and gifts without inventing their looks, actions, words or intentions. '
+        'When verified_trades supplies confirmed partner identities and acquisitions, honor these facts without inventing looks, gestures, dialogue or intentions. '
         'Never fabricate the motivations for the destruction of a weapon. Do not conflate looting with killing. '
         'Narrate included confirmed events in their source order. Do not make trades precede earlier acquisitions; skip rather than rearrange. '
         'Use narrative_beats and mandatory_chronology to ground a scene outline, but DO NOT reproduce these lists in the prose. '
-        'Do not invent a named location like Whistling Thicket, a novel tavern, or a different zone. '
-        'Only use named locations supported by observation or ledgers; for this session Night Harbor and its observed sandy, walled outskirts. '
+        'Do not invent named forests, taverns, towns, factions, landmarks, or zones that the supplied evidence does not establish. '
+        'Only use named locations supported by current recording observations or ledgers; never transfer locations, scenery or character names from other sessions. '
         'Real-world ledger timestamps do not establish in-game day or night. Only use day/night when supported by an observed frame. '
         'Do not pretend visually sampled action continuously proves all events between sampled frames. '
         'Do not insert game UI, camera language, damage numbers, levels as video-game mechanics, or literal source citations in the chapter. '
